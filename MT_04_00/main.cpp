@@ -29,30 +29,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// 初期化
 	///=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
 
-	/// 回転設定
-	Vector3 center = { 0.0f,0.0f,0.0f };
-	float radius = 0.8f;///回転半径
-	int eachCircleTime = 2;///1周するのにかかる時間(秒)
-
-	/// Sphere
-	Sphere ball;
-	ball.center = { radius, 0.0f, 0.0f };
-	ball.radius = 0.05f;
-
-	/// Time
-	int time = 0;
-	int maxTime = 60 * eachCircleTime;
-
-	///カメラ初期化
-	Vector3 cameraTranslate{ 0.0f, 1.9f, -6.49f };
-	Vector3 cameraRotate{ 0.26f, 0.0f, 0.0f };
-
-	Matrix4x4 cameraMatix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
-	Matrix4x4 cameraViewMatrix = Inverse(cameraMatix);
-	Matrix4x4 cameraProjectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
-	Matrix4x4 cameraWorldViewProjectionMatrix = cameraProjectionMatrix * cameraViewMatrix;
-	Matrix4x4 cameraViewportMatrix = MakeViewportMatrix(0.0f, 0.0f, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-
+	Vector3 axis = Normalize({ 1.0f,1.0f,1.0f });
+	float angle = 0.44f;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -67,55 +45,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ボタン処理
 		///=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
 
-		if (keys[DIK_A]) { cameraTranslate.x -= 0.1f; }
-		if (keys[DIK_D]) { cameraTranslate.x += 0.1f; }
-		if (keys[DIK_W]) { cameraTranslate.z += 0.1f; }
-		if (keys[DIK_S]) { cameraTranslate.z -= 0.1f; }
-		if (keys[DIK_Z]) { cameraRotate.y += 0.1f; }
-		if (keys[DIK_C]) { cameraRotate.y -= 0.1f; }
-		if (keys[DIK_R]) {
-			cameraTranslate = { 0.0f, 1.9f, -6.49f };
-			cameraRotate = { 0.26f, 0.0f,   0.0f };
-		}
+		
 
 		///=========================================================================================================================================================================================
 		/// 更新処理
 		///=========================================================================================================================================================================================
 
+		Matrix4x4 rotateMatrix = MakeRotateAxisAngle(axis, angle);
 
-		///カメラ更新処理
-		cameraMatix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
-		cameraViewMatrix = Inverse(cameraMatix);
-		cameraProjectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
-		cameraWorldViewProjectionMatrix = cameraViewMatrix * cameraProjectionMatrix;
-		cameraViewportMatrix = MakeViewportMatrix(0.0f, 0.0f, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-
-		/// Timer更新処理
-		if (time == maxTime) { time = 0; } else { time++; }
-
-		/// bollの回転処理
-		ball.center = ball.center + uniformCircularMotion(center, radius, float(time),float(maxTime), XY);
 
 		///=========================================================================================================================================================================================
 		/// 描画処理
 		///=========================================================================================================================================================================================
 
-		/// Grid
-		DrawGrid(cameraWorldViewProjectionMatrix, cameraViewportMatrix);
-
-		/// DrawSpring
-		DrawSphere({ ball.center, ball.radius }, cameraWorldViewProjectionMatrix, cameraViewportMatrix, WHITE);
-
-		/// ImGui
-		ImGui::Begin("Control Penol");
-		//ImGui::SliderFloat3("ball.center", &ball.center.x, 0.0f, 2.0f);
-		//ImGui::SliderFloat3("center", &center.x, 0.0f, 2.0f);
-		//ImGui::SliderFloat("Radius", &radius, 0.0f, 2.0f);
-		if (ImGui::Button("Start")) {
-			ball.center = { radius, 0.0f, 0.0f };
-			time = 0;
-		}
-		ImGui::End();
+		MatrixScreenPrintf(0, 0, rotateMatrix, "rotateMatrix");
 
 		/// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		/// StageEND

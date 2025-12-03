@@ -760,7 +760,7 @@ void MatrixScreenPrintf(int x, int y, Matrix4x4& matrix, const char* name) {
 				Novice::ScreenPrintf(
 					x + column * kColumnWidth,
 					y + row * kRowHeight,
-					"%6.02f",
+					"%6.03f",
 					matrix.m[row][column]
 				);
 			}
@@ -772,7 +772,7 @@ void MatrixScreenPrintf(int x, int y, Matrix4x4& matrix, const char* name) {
 				Novice::ScreenPrintf(
 					x + column * kColumnWidth,
 					y + row * kRowHeight + kRowHeight,
-					"%6.02f",
+					"%6.03f",
 					matrix.m[row][column]
 				);
 			}
@@ -813,6 +813,21 @@ Matrix4x4 MakeRotateZMatrix(const float theta) {
 
 Matrix4x4 MakeRotateMatrix(const Matrix4x4 thetaX, const Matrix4x4 thetaY, const Matrix4x4 thetaZ) {
 	return Multiply(thetaX, Multiply(thetaY, thetaZ));
+}
+
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle) {
+	float c = cosf(angle);
+	float s = sinf(angle);
+	float t = 1 - c;
+
+	Matrix4x4 result = {
+		(t * axis.x * axis.x + c)			,(t * axis.x * axis.y + s * axis.z), (t * axis.x* axis.z - s * axis.y )	,0.0f	,
+		(t * axis.x * axis.y - s * axis.z)	,(t * axis.y * axis.y + c),			 (t * axis.y * axis.z + s * axis.x)	,0.0f	,
+		(t * axis.x * axis.z + s * axis.y)	,(t * axis.y * axis.z - s * axis.x), (t * axis.z * axis.z + c)			,0.0f	,
+		0.0f,								 0.0f,								 0.0f,								1.0f
+	};
+
+	return result;
 }
 
 Matrix4x4 MakeTranslateMatrix(const Vector3 translate) {

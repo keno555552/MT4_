@@ -311,6 +311,8 @@ Matrix4x4 MakeRotateZMatrix(const float theta);
 /// <returns>結果Matrix4x4</returns>
 Matrix4x4 MakeRotateMatrix(const Matrix4x4 thetaX, const Matrix4x4 thetaY, const Matrix4x4 thetaZ);
 
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
+
 /// <summary>
 /// 移動のVector3からMatrix4x4への変換
 /// </summary>
