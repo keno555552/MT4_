@@ -38,6 +38,7 @@ typedef struct Vector3 {
 	///演算子再定義
 	Vector3 operator+(const Vector3& target);
 	Vector3 operator-(const Vector3& target);
+	Vector3 operator-() const;
 	Vector3 operator*(const Vector3& target);
 	Vector3 operator/(const Vector3& target);
 	Vector3 operator*(const float& target);
@@ -311,6 +312,12 @@ Matrix4x4 MakeRotateZMatrix(const float theta);
 /// <returns>結果Matrix4x4</returns>
 Matrix4x4 MakeRotateMatrix(const Matrix4x4 thetaX, const Matrix4x4 thetaY, const Matrix4x4 thetaZ);
 
+/// <summary>
+/// 指定した軸と角度に基づく4×4の回転行列を生成します。
+/// </summary>
+/// <param name="axis">回転軸を表す3次元ベクトル。通常は単位ベクトル（正規化）を用います。</param>
+/// <param name="angle">回転角。関数実装で期待される単位（通常はラジアン）で指定します。</param>
+/// <returns>指定した軸周りに指定角だけ回転する4×4の回転行列（Matrix4x4）を返します。</returns>
 Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
 
 /// <summary>
@@ -319,6 +326,9 @@ Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
 /// <param name="translate">Vector3</param>
 /// <returns>結果Matrix4x4</returns>
 Matrix4x4 MakeTranslateMatrix(const Vector3 translate);
+
+
+Matrix4x4 DirectionalToDirection(const Vector3& from, const Vector3& to);
 
 #pragma endregion
 

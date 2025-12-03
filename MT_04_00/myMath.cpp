@@ -50,6 +50,10 @@ Vector3 Vector3::operator-(const Vector3& target) {
 	return { x - target.x, y - target.y , z - target.z };
 }
 
+Vector3 Vector3::operator-() const {
+	return Vector3{ -x, -y, -z };
+}
+
 Vector3 Vector3::operator*(const Vector3& target) {
 	return { x * target.x, y * target.y };
 }
@@ -816,15 +820,15 @@ Matrix4x4 MakeRotateMatrix(const Matrix4x4 thetaX, const Matrix4x4 thetaY, const
 }
 
 Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle) {
-	float c = cosf(angle);
-	float s = sinf(angle);
-	float t = 1 - c;
+	float cosTheta = cosf(angle);
+	float sinTheta = sinf(angle);
+	float factor = 1 - cosTheta;
 
 	Matrix4x4 result = {
-		(t * axis.x * axis.x + c)			,(t * axis.x * axis.y + s * axis.z), (t * axis.x* axis.z - s * axis.y )	,0.0f	,
-		(t * axis.x * axis.y - s * axis.z)	,(t * axis.y * axis.y + c),			 (t * axis.y * axis.z + s * axis.x)	,0.0f	,
-		(t * axis.x * axis.z + s * axis.y)	,(t * axis.y * axis.z - s * axis.x), (t * axis.z * axis.z + c)			,0.0f	,
-		0.0f,								 0.0f,								 0.0f,								1.0f
+		(factor * axis.x * axis.x + cosTheta)			,(factor * axis.x * axis.y + sinTheta * axis.z), (factor * axis.x * axis.z - sinTheta * axis.y )	,0.0f	,
+		(factor * axis.x * axis.y - sinTheta * axis.z)	,(factor * axis.y * axis.y + cosTheta),			 (factor * axis.y * axis.z + sinTheta * axis.x )	,0.0f	,
+		(factor * axis.x * axis.z + sinTheta * axis.y)	,(factor * axis.y * axis.z - sinTheta * axis.x), (factor * axis.z * axis.z + cosTheta)				,0.0f	,
+													0.0f,										   0.0f,												0.0f,1.0f
 	};
 
 	return result;
@@ -835,6 +839,37 @@ Matrix4x4 MakeTranslateMatrix(const Vector3 translate) {
 							 0.0f,		  1.0f,		   0.0f, 0.0f,
 							 0.0f,		  0.0f,		   1.0f, 0.0f,
 					  translate.x, translate.y,	translate.z, 1.0f };
+}
+
+Matrix4x4 DirectionalToDirection(const Vector3& from, const Vector3& to) {
+	Vector3 nFrom = Normalize(from);
+	Vector3 nTo = Normalize(to);
+
+	float cosTheta = Dot(nFrom,nTo);
+
+	if(cosTheta >  0.9999f){
+		return MakeIdentity4x4();
+	}
+	if(cosTheta < -0.9999f){
+		Vector3							orthognal = Cross(nFrom, Vector3{ 0.0f,0.0f,1.0f });
+		if(Length(orthognal) < 0.0001f) orthognal = Cross(nFrom, Vector3{ 0.0f,1.0f,0.0f });
+
+		Vector3 axis = Normalize(orthognal);
+		return Transpose(MakeRotateAxisAngle(axis, M_PI));
+	}
+
+	Vector3 axis = Normalize(Cross(nFrom, nTo));
+	float sinTheta = Dot(axis, Cross(nFrom, nTo));
+	float factor = 1 - cosTheta;
+
+	Matrix4x4 result = {
+		(factor * axis.x * axis.x + cosTheta)			,(factor * axis.x * axis.y + sinTheta * axis.z), (factor * axis.x * axis.z - sinTheta * axis.y)	,0.0f	,
+		(factor * axis.x * axis.y - sinTheta * axis.z)	,(factor * axis.y * axis.y + cosTheta),			 (factor * axis.y * axis.z + sinTheta * axis.x)	,0.0f	,
+		(factor * axis.x * axis.z + sinTheta * axis.y)	,(factor * axis.y * axis.z - sinTheta * axis.x), (factor * axis.z * axis.z + cosTheta)				,0.0f	,
+													0.0f,										   0.0f,												0.0f,1.0f
+	};
+
+	return result;
 }
 
 Matrix4x4 MakeAffineMatrix(Vector3 scale, Vector3 rotate, Vector3 translate) {

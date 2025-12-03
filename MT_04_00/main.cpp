@@ -29,8 +29,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// 初期化
 	///=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
 
-	Vector3 axis = Normalize({ 1.0f,1.0f,1.0f });
-	float angle = 0.44f;
+	Vector3 from0	= Normalize({ 1.0f, 0.7f, 0.5f });
+	Vector3 to0		= -from0;
+	Vector3 from1	= Normalize({-0.6f, 0.9f, 0.2f });
+	Vector3 to1		= Normalize({ 0.4f, 0.7f,-0.5f });
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -51,14 +53,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// 更新処理
 		///=========================================================================================================================================================================================
 
-		Matrix4x4 rotateMatrix = MakeRotateAxisAngle(axis, angle);
+		Matrix4x4 rotateMatrix0 = DirectionalToDirection(Normalize({ 1.0f,0.0f,0.0f }),
+														 Normalize({-1.0f,0.0f,0.0f }));
+
+		Matrix4x4 rotateMatrix1 = DirectionalToDirection(from0,to0);
+		Matrix4x4 rotateMatrix2 = DirectionalToDirection(from1,to1);
 
 
 		///=========================================================================================================================================================================================
 		/// 描画処理
 		///=========================================================================================================================================================================================
 
-		MatrixScreenPrintf(0, 0, rotateMatrix, "rotateMatrix");
+		const int kRowHeight = 20;
+		MatrixScreenPrintf(0, 0, rotateMatrix0, "rotateMatrix0");
+		MatrixScreenPrintf(0, kRowHeight * 5, rotateMatrix1, "rotateMatrix1");
+		MatrixScreenPrintf(0, kRowHeight * 10, rotateMatrix2, "rotateMatrix2");
 
 		/// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		/// StageEND
