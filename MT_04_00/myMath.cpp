@@ -755,6 +755,15 @@ Matrix4x4 MakeIdentity4x4() {
 	return resuit;
 }
 
+Vector3 Transform(const Vector3 vector, const Matrix4x4 matrix) {
+	return {
+		vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + matrix.m[3][0],
+		vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + matrix.m[3][1],
+		vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2]
+	};
+
+}
+
 void MatrixScreenPrintf(int x, int y, Matrix4x4& matrix, const char* name) {
 	int kColumnWidth = 60;
 	int kRowHeight = 20;

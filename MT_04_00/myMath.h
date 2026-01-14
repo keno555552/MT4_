@@ -292,6 +292,10 @@ Matrix4x4 Transpose(const Matrix4x4 m);
 // 6. 単位行列の作成
 Matrix4x4 MakeIdentity4x4();
 
+
+/// ////////////////////////Transformations
+Vector3 Transform(const Vector3 vector, const Matrix4x4 matrix);
+
 /// <summary>
 /// 拡縮のVector3からMatrix4x4への変換
 /// </summary>

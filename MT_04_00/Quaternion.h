@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <math.h>
-#include "Vector3.h"
+#include "myMath.h"
 
 struct Vector3;
 typedef struct Quaternion {
@@ -16,6 +16,14 @@ typedef struct Quaternion {
 
 }Quaternion;
 
+/// <summary>
+/// Matrix4x4を描写する
+/// </summary>
+/// <param name="x">左上のposX</param>
+/// <param name="y">左上のposY</param>
+/// <param name="matrix">描写したいMatrix3x3</param>
+void QuaternionScreenPrintf(int x,int y,Quaternion& quaternion,const char* name);
+
 // 積
 Quaternion Multiply(const Quaternion& m1, const Quaternion& m2);
 // 単位行列の作成
@@ -30,6 +38,14 @@ Quaternion Normalize(const Quaternion& target);
 Quaternion Inverse(const Quaternion& target);
 
 
-// 任意軸回転を表すQuaternionの作成
-Quaternion MakeRotateAxisAngleQuaternioin(const Vector3& axis, float angle);
+// 任意軸回転を表すQuaternionの生成
+Quaternion MakeRotateAxisAngleQuaternion(
+	const Vector3& axis, float angle);
+
+// ベクトルをQuaternionで回転させた結果のベクトルを求める
+Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion);
+
+// Quaternionから回転行列を求める
+Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
+
 
