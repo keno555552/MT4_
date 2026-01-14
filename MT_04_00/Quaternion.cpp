@@ -115,7 +115,7 @@ Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t) {
 
 	const float EPSILON = 1e-6f;
 	if (dot > 1.0f - EPSILON) {
-		// 線性插值後再 normalize
+		// 線形補間の後に正規化
 		Quaternion result = q1n * (1.0f - t) + q2n * t;
 		return Normalize(result);
 	}
@@ -147,9 +147,9 @@ Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
 }
 
 Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion) {
-	Quaternion q = Normalize(quaternion); // 确保四元数是单位四元数
+	Quaternion q = Normalize(quaternion); 
 	Quaternion p = { vector.x, vector.y, vector.z, 0.0f };
-	Quaternion qInv = Conjugate(q); // 假設 q 已經 normalize
+	Quaternion qInv = Conjugate(q); 
 
 	Quaternion result = q * p * qInv;
 
