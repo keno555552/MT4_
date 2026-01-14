@@ -12,7 +12,10 @@ typedef struct Quaternion {
 	Quaternion operator+(const Quaternion& target);
 	Quaternion operator-(const Quaternion& target);
 	Quaternion operator*(const Quaternion& target);
+	Quaternion operator*(const float& target);
 	Quaternion operator/(const Quaternion& target);
+	Quaternion operator=(const Quaternion& target);
+	Quaternion operator-() const;
 
 }Quaternion;
 
@@ -24,6 +27,8 @@ typedef struct Quaternion {
 /// <param name="matrix">描写したいMatrix3x3</param>
 void QuaternionScreenPrintf(int x,int y,Quaternion& quaternion,const char* name);
 
+// 内積
+float Dot(const Quaternion& q1, const Quaternion& q2);
 // 積
 Quaternion Multiply(const Quaternion& m1, const Quaternion& m2);
 // 単位行列の作成
@@ -34,8 +39,11 @@ Quaternion Conjugate(const Quaternion& target);
 float Norm(const Quaternion& target);
 // 単位化
 Quaternion Normalize(const Quaternion& target);
-// 4. 逆行列
+// 逆行列
 Quaternion Inverse(const Quaternion& target);
+
+// 球面線形補間
+Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
 
 
 // 任意軸回転を表すQuaternionの生成
