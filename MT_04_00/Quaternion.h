@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <math.h>
+#include "Vector3.h"
 
+struct Vector3;
 typedef struct Quaternion {
 
 	///定義
@@ -26,6 +28,8 @@ float Norm(const Quaternion& target);
 Quaternion Normalize(const Quaternion& target);
 // 4. 逆行列
 Quaternion Inverse(const Quaternion& target);
-//// 5. 転置行列
-//Quaternion Transpose(const Quaternion m);
+
+
+// 任意軸回転を表すQuaternionの作成
+Quaternion MakeRotateAxisAngleQuaternioin(const Vector3& axis, float angle);
 

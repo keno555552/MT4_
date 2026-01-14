@@ -1,4 +1,5 @@
 ﻿#include "Quaternion.h"
+#include "myMath.h"
 
 Quaternion Quaternion::operator+(const Quaternion& target) {
     return {x + target.x, y + target.y, z + target.z , w + target.w};
@@ -56,5 +57,22 @@ Quaternion Inverse(const Quaternion& target) {
     Quaternion c = Conjugate(target);
     float invSq = 1.0f / sqNorm;
     return { c.x * invSq, c.y * invSq, c.z * invSq, c.w * invSq };
+}
+
+Quaternion MakeRotateAxisAngleQuaternioin(const Vector3& axis, float angle) {
+    Vector3 nAxis = Normalize(axis);
+    if (nAxis.x == 0 && nAxis.y == 0 && nAxis.z == 0) {
+        return IdentityQuaternion();
+	}
+
+    float halfAngle = angle * 0.5f;
+    float sinHalfAngle = sinf(halfAngle);
+    float cosHalfAngle = cosf(halfAngle);
+    return {
+        nAxis.x * sinHalfAngle,
+        nAxis.y * sinHalfAngle,
+        nAxis.z * sinHalfAngle,
+        cosHalfAngle
+	};
 }
 
